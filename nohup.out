@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "send_msg_txt.py", line 97, in <module>
+    time.sleep(60)
+KeyboardInterrupt
