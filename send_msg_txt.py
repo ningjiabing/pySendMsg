@@ -18,20 +18,22 @@ def wx_image():
 
 def meituan_image():
     ts = datetime.date.today()
-    if ts.day != meituan_date:
+    today_weekday = datetime.datetime.now().weekday()
+
+    if 0 <= today_weekday <= 4:  # 0 to 4 corresponds to Monday to Friday
+        wx_dir = './images/13yuan/'
+        images_array = os.listdir(wx_dir)
+        image = wx_dir + random.choice(images_array)
+        return sendMsg(image)
+    elif ts.day == meituan_date:
+        meituan_dir = './images/18th/'
+        images_array = os.listdir(meituan_dir)
+        image = meituan_dir + random.choice(images_array)
+        return sendMsg(image)
+    else:
         return
 
-    meituan_dir = './images/18th/'
-    images_array = os.listdir(meituan_dir)
-    image = meituan_dir + random.choice(images_array)
-    return sendMsg(image)
 
-
-def meituan_13_image():
-    wx_dir = './images/13yuan/'
-    images_array = os.listdir(wx_dir)
-    image = wx_dir + random.choice(images_array)
-    return sendMsg(image)
 
 def sendMsg(image):
     with open(image, 'rb') as file:
@@ -57,16 +59,11 @@ def sendMsg(image):
     result = requests.post(url, headers=headers, json=data)
     return result
 
-
 # wx_image()
 # 周报提醒
 schedule.every().friday.at("17:00").do(wx_image)
 # 美团18号18元大额劵提醒
 schedule.every().day.at("10:55").do(meituan_image)
-# 美团星期一二 13元大额劵提醒
-schedule.every().monday.at("10:58").do(meituan_13_image)
-schedule.every().tuesday.at("10:58").do(meituan_13_image)
-
 while True:
     schedule.run_pending()
     time.sleep(60)
